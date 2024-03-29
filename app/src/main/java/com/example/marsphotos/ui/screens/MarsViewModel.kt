@@ -61,9 +61,13 @@ class MarsViewModel(private val marsPhotosRepository: StudentsRepository) : View
     fun getStudents() {
         viewModelScope.launch {
             marsUiState = MarsUiState.Loading
-            marsUiState =
+            marsUiState = try {
                 MarsUiState.Success(marsPhotosRepository.getStudents().students)
-
+            } catch (e: IOException) {
+                MarsUiState.Error
+            } catch (e: HttpException) {
+                MarsUiState.Error
+            }
         }
     }
 
